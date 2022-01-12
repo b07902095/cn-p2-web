@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme) =>
     messageBlue: {
       position: "relative",
       marginLeft: "20px",
-      marginBottom: "10px",
-      padding: "10px",
+      marginBottom: "20px",
+      padding: "15px",
       backgroundColor: "#A8DDFD",
-      width: "60%",
+      width: "90%",
       //height: "50px",
       textAlign: "left",
       font: "400 .9em 'Open Sans', sans-serif",
@@ -50,10 +50,10 @@ const useStyles = makeStyles((theme) =>
     messageOrange: {
       position: "relative",
       marginRight: "20px",
-      marginBottom: "10px",
-      padding: "10px",
+      marginBottom: "20px",
+      padding: "15px",
       backgroundColor: "#f8e896",
-      width: "60%",
+      width: "30%",
       //height: "50px",
       textAlign: "left",
       font: "400 .9em 'Open Sans', sans-serif",
@@ -82,7 +82,6 @@ const useStyles = makeStyles((theme) =>
         right: "-17px"
       }
     },
-
     messageContent: {
       padding: 0,
       margin: 0
@@ -92,10 +91,9 @@ const useStyles = makeStyles((theme) =>
       fontSize: ".85em",
       fontWeight: "300",
       marginTop: "10px",
-      bottom: "-3px",
+      bottom: "1px",
       right: "5px"
     },
-
     orange: {
       color: theme.palette.getContrastText(deepOrange[500]),
       backgroundColor: deepOrange[500],
@@ -106,7 +104,7 @@ const useStyles = makeStyles((theme) =>
       color: "transparent",
       backgroundColor: "transparent",
       width: theme.spacing(4),
-      height: theme.spacing(4)
+      height: theme.spacing(4),
     },
     displayName: {
       marginLeft: "20px"
@@ -119,8 +117,9 @@ export const MessageLeft = (props) => {
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp ? props.timestamp : "";
   const photoURL = props.photoURL ? props.photoURL : "dummy.js";
-  const displayName = props.displayName ? props.displayName : "名無しさん";
+  const displayName = props.displayName ? props.displayName : "None";
   const classes = useStyles();
+
   return (
     <>
       <div className={classes.messageRow}>
@@ -142,7 +141,7 @@ export const MessageLeft = (props) => {
     </>
   );
 };
-//avatarが右にあるメッセージ（自分）
+
 export const MessageRight = (props) => {
   const classes = useStyles();
   const message = props.message ? props.message : "no message";
