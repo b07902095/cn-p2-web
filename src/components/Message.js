@@ -147,18 +147,22 @@ export const MessageLeft = (props) => {
   }
 
   const handleShowImage = async () => {
-    let token = props.token
-    let target = props.target
-    let id = props.id
-    try {
-      const res = await get_messages_file({ token, target, id })
+    if (contenType === "Image") {
+      let token = props.token
+      let target = props.target
+      let id = props.id
       try {
-        const url = window.URL.createObjectURL(new File([res.data], message))
-        setRenderURL(url)
+        const res = await get_messages_file({ token, target, id })
+        try {
+          const url = window.URL.createObjectURL(new File([res.data], message))
+          setRenderURL(url)
+        } catch (err) {
+          setRenderURL("")
+        }
       } catch (err) {
         setRenderURL("")
       }
-    } catch (err) {
+    } else {
       setRenderURL("")
     }
   }
@@ -235,18 +239,22 @@ export const MessageRight = (props) => {
   }
 
   const handleShowImage = async () => {
-    let token = props.token
-    let target = props.target
-    let id = props.id
-    try {
-      const res = await get_messages_file({ token, target, id })
+    if (contenType === "Image") {
+      let token = props.token
+      let target = props.target
+      let id = props.id
       try {
-        const url = window.URL.createObjectURL(new File([res.data], message))
-        setRenderURL(url)
+        const res = await get_messages_file({ token, target, id })
+        try {
+          const url = window.URL.createObjectURL(new File([res.data], message))
+          setRenderURL(url)
+        } catch (err) {
+          setRenderURL("")
+        }
       } catch (err) {
         setRenderURL("")
       }
-    } catch (err) {
+    } else {
       setRenderURL("")
     }
   }
