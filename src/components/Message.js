@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import { deepOrange } from "@material-ui/core/colors";
 
-import { del_messages } from "./Axios";
+import { get_messages_file, del_messages } from "./Axios";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -114,13 +114,58 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-//avatarが左にあるメッセージ（他人）
 export const MessageLeft = (props) => {
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp ? props.timestamp : "";
   const photoURL = props.photoURL ? props.photoURL : "dummy.js";
   const displayName = props.displayName ? props.displayName : "None";
+  const contenType = props.contenType
   const classes = useStyles();
+
+  const [renderURL, setRenderURL] = useState("")
+
+  const handleDownload = async () => {
+    let token = props.token
+    let target = props.target
+    let id = props.id
+    try {
+      const res = await get_messages_file({ token, target, id })
+      try {
+        const url = window.URL.createObjectURL(new File([res.data], message))
+        const link = document.createElement("a")
+        link.href = url
+        link.setAttribute("download", message)
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode.removeChild(link)
+      } catch (err) {
+        props.setStatus({ type: "warning", msg: "Network error!" })
+      }
+    } catch (err) {
+      props.setStatus({ type: "danger", msg: err })
+    }
+  }
+
+  const handleShowImage = async () => {
+    let token = props.token
+    let target = props.target
+    let id = props.id
+    try {
+      const res = await get_messages_file({ token, target, id })
+      try {
+        const url = window.URL.createObjectURL(new File([res.data], message))
+        setRenderURL(url)
+      } catch (err) {
+        setRenderURL("")
+      }
+    } catch (err) {
+      setRenderURL("")
+    }
+  }
+
+  useEffect(() => {
+    handleShowImage()
+  }, [])
 
   return (
     <>
@@ -134,9 +179,27 @@ export const MessageLeft = (props) => {
           <div className={classes.displayName}>{displayName}</div>
           <div className={classes.messageBlue}>
             <div>
-              <p
-                className={classes.messageContent}
-              >{message}</p>
+              {
+                contenType === "Image" ?
+                <img
+                  src={renderURL}
+                  width="40px"
+                ></img>:
+                <></>
+              }
+              {
+                contenType === "Generic" ?
+                <p
+                  className={classes.messageContent}
+                >{message}</p> :
+                <p
+                  className={classes.messageContent}
+                  style={{ cursor: "pointer" }}
+                  onClick={(e) => {
+                    handleDownload()
+                  }}
+                >{message}</p>
+              }
             </div>
             <div className={classes.messageTimeStampRight}>{timestamp}</div>
           </div>
@@ -150,6 +213,9 @@ export const MessageRight = (props) => {
   const classes = useStyles();
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp ? props.timestamp : "";
+  const contenType = props.contenType
+
+  const [renderURL, setRenderURL] = useState("")
 
   const handleDelMes = async () => {
     let token = props.token
@@ -168,9 +234,42 @@ export const MessageRight = (props) => {
     }
   }
 
+  const handleShowImage = async () => {
+    let token = props.token
+    let target = props.target
+    let id = props.id
+    try {
+      const res = await get_messages_file({ token, target, id })
+      try {
+        const url = window.URL.createObjectURL(new File([res.data], message))
+        setRenderURL(url)
+      } catch (err) {
+        setRenderURL("")
+      }
+    } catch (err) {
+      setRenderURL("")
+    }
+  }
+
+  useEffect(() => {
+    handleShowImage()
+  }, [])
+
+  useEffect(() => {
+    handleShowImage()
+  }, [props.message])
+
   return (
     <div className={classes.messageRowRight}>
       <div className={classes.messageOrange}>
+        {
+          contenType === "Image" ?
+          <img
+            src={renderURL}
+            width="40px"
+          ></img>:
+          <></>
+        }
         <p
           className={classes.messageContent}
           style={{ cursor: "pointer" }}

@@ -131,13 +131,19 @@ const ChatBox = (props) => {
                 val.sender_name === props.currentTarget ?
                 <MessageLeft
                   message={val.content}
+                  contenType={val.type}
                   timestamp={val.timestamp}
                   photoURL=""
                   displayName={val.sender_name}
                   avatarDisp={false}
+                  setStatus={props.setStatus}
+                  token={props.token}
+                  target={props.currentTarget}
+                  id={val.id}
                 /> :
                 <MessageRight
                   message={val.content}
+                  contenType={val.type}
                   timestamp={val.timestamp}
                   photoURL=""
                   displayName={val.sender_name}

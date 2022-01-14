@@ -44,6 +44,23 @@ const put_messages = async (req) => {
   return data
 }
 
+const put_messages_file = async (formData) => {
+  const { data } = await instance.post("/put/messages/file", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
+  })
+  return data
+}
+
+const get_messages_file = async (req) => {
+  return await instance.post(
+    "/get/messages/file",
+    req,
+    { responseType: "blob" }
+  )
+}
+
 const del_messages = async (req) => {
   const { data } = await instance.post("/del/messages", req)
   return data
@@ -57,5 +74,7 @@ export {
   get_friends,
   get_messages,
   put_messages,
+  put_messages_file,
+  get_messages_file,
   del_messages,
 }
