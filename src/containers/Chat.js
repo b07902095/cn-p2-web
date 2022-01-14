@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 
+import DeleteIcon from '@material-ui/icons/Delete';
+import Button from '@material-ui/core/Button';
+
 import { MessageLeft, MessageRight } from "../components/Message";
 import { TextInput } from "../components/TextInput";
 
-import { get_messages } from "../components/Axios";
+import { del_friends, get_messages } from "../components/Axios";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -85,40 +88,83 @@ const ChatBox = (props) => {
     handleFetch()
   }
 
+  const handleDel = async () => {
+    let token = props.token
+    let target = props.currentTarget
+    try {
+      const { status } = await del_friends({ token, target })
+      if (status === "ok") {
+        props.setStatus({ type: "success", msg: "Successfully deleted" })
+        window.location.reload()
+      } else {
+        props.setStatus({ type: "warning", msg: "Network error!" })
+      }
+    } catch (err) {
+      props.setStatus({ type: "danger", msg: err })
+    }
+  }
+
   return (
     <div className={classes.container}>
-      <Paper className={classes.paper}>
-        <h4>
-          {props.currentTarget}
-        </h4>
-        <Paper id="style-1" className={classes.messagesBody}>
-          {
-            chat.map((val, _) => (
-              val.sender_name === props.currentTarget ?
-              <MessageLeft
-                message={val.content}
-                timestamp={val.timestamp}
-                photoURL=""
-                displayName={val.sender_name}
-                avatarDisp={false}
-              /> :
-              <MessageRight
-                message={val.content}
-                timestamp={val.timestamp}
-                photoURL=""
-                displayName={val.sender_name}
-                avatarDisp={false}
-            />
-            ))
-          }
-        </Paper>
-        <TextInput
-          token={props.token}
-          currentTarget={props.currentTarget}
-          setStatus={props.setStatus}
-          refreshChat={refreshChat}
-        />
-      </Paper>
+      {
+        props.currentTarget ? 
+        <Paper className={classes.paper}>
+          <h3>
+            {props.currentTarget}
+          </h3>
+          <div style={{ alignItems: "right" }}>
+            <Button
+              size="small"
+              variant="contained"
+              endIcon={<DeleteIcon />}
+              color="secondary"
+              onClick={(e) => {
+                handleDel()
+              }}
+            >
+              Unfriend
+            </Button>
+          </div>
+          <Paper id="style-1" className={classes.messagesBody}>
+            {
+              chat.map((val, idx) => (
+                val.sender_name === props.currentTarget ?
+                <MessageLeft
+                  message={val.content}
+                  timestamp={val.timestamp}
+                  photoURL=""
+                  displayName={val.sender_name}
+                  avatarDisp={false}
+                /> :
+                <MessageRight
+                  message={val.content}
+                  timestamp={val.timestamp}
+                  photoURL=""
+                  displayName={val.sender_name}
+                  avatarDisp={false}
+                  setStatus={props.setStatus}
+                  token={props.token}
+                  target={props.currentTarget}
+                  id={val.id}
+                  chat={chat}
+                  delIdx={idx}
+              />
+              ))
+            }
+          </Paper>
+          <TextInput
+            token={props.token}
+            currentTarget={props.currentTarget}
+            setStatus={props.setStatus}
+            refreshChat={refreshChat}
+          />
+        </Paper> :
+        <div>
+          <h1>
+            Please select a friend first.
+          </h1>
+        </div>
+      }
     </div>
   );
 }

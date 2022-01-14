@@ -19,6 +19,16 @@ const sign_in = async (req) => {
   return data
 }
 
+const put_friends = async (req) => {
+  const { data } = await instance.post("/put/friends", req)
+  return data
+}
+
+const del_friends = async (req) => {
+  const { data } = await instance.post("/del/friends", req)
+  return data
+}
+
 const get_friends = async (req) => {
   const { data } = await instance.post("/get/friends", req)
   return data
@@ -34,10 +44,18 @@ const put_messages = async (req) => {
   return data
 }
 
+const del_messages = async (req) => {
+  const { data } = await instance.post("/del/messages", req)
+  return data
+}
+
 export {
   sign_up,
   sign_in,
+  put_friends,
+  del_friends,
   get_friends,
   get_messages,
   put_messages,
+  del_messages,
 }

@@ -3,6 +3,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import { deepOrange } from "@material-ui/core/colors";
 
+import { del_messages } from "./Axios";
+
 const useStyles = makeStyles((theme) =>
   createStyles({
     messageRow: {
@@ -132,7 +134,9 @@ export const MessageLeft = (props) => {
           <div className={classes.displayName}>{displayName}</div>
           <div className={classes.messageBlue}>
             <div>
-              <p className={classes.messageContent}>{message}</p>
+              <p
+                className={classes.messageContent}
+              >{message}</p>
             </div>
             <div className={classes.messageTimeStampRight}>{timestamp}</div>
           </div>
@@ -146,10 +150,34 @@ export const MessageRight = (props) => {
   const classes = useStyles();
   const message = props.message ? props.message : "no message";
   const timestamp = props.timestamp ? props.timestamp : "";
+
+  const handleDelMes = async () => {
+    let token = props.token
+    let target = props.target
+    let id = props.id
+    try {
+      const { status } = await del_messages({ token, target, id })
+      if (status === "ok") {
+        await props.chat.splice(props.delIdx, 1)
+        props.setStatus({ type: "success", msg: "Successfully unsend" })
+      } else {
+        props.setStatus({ type: "warning", msg: "Network error!" })
+      }
+    } catch (err) {
+      props.setStatus({ type: "danger", msg: err })
+    }
+  }
+
   return (
     <div className={classes.messageRowRight}>
       <div className={classes.messageOrange}>
-        <p className={classes.messageContent}>{message}</p>
+        <p
+          className={classes.messageContent}
+          style={{ cursor: "pointer" }}
+          onClick={(e) => {
+            handleDelMes()
+          }}
+        >{message}</p>
         <div className={classes.messageTimeStampRight}>{timestamp}</div>
       </div>
     </div>
