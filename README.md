@@ -14,7 +14,7 @@ for front-end browser usage
 ## Start Backend
 ### `./server 8000`
 
-## Start Browser, with is connect to clien executable file
+## Start Browser, with is connect to client executable file
 ### `yarn start`
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 If you want to create multiple client, you can try incognito mode on your browser
