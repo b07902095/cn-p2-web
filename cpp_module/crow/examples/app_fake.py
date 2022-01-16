@@ -3,6 +3,7 @@ import cv2
 import time
 import copy
 import json
+import shutil
 import secrets
 import tempfile
 
@@ -124,6 +125,9 @@ def put_account():
         "token": secrets.token_hex(8),
         "friend_list": list()
     }))
+    os.makedirs(os.path.join(fs_root, fake_database["user"][-1]["username"]), exist_ok=True)
+    for friend in fake_database["user"][-1]["friend_list"]:
+            os.makedirs(os.path.join(fs_root, fake_database["user"][-1], friend), exist_ok=True)
     fake_database["history"][username] = dict()
     return flask.jsonify({
         "status": "ok"
@@ -161,6 +165,7 @@ def put_friends():
                         # target hasnt been friend
                         user_info["friend_list"].append(target)
                         fake_database["history"][user_info["username"]][target] = list()
+                        os.makedirs(os.path.join(fs_root, user_info["friend_list"][-1]), exist_ok=True)
                         return flask.jsonify({
                             "status": "ok"
                         })
@@ -185,8 +190,15 @@ def del_friends():
         if token == user_info["token"]:
             print("token correct")
             # token is correct
+            current_user_id = fake_database["user"].index(user_info)
             user_info["friend_list"].remove(target)
             fake_database["history"][user_info["username"]].pop(target)
+            try:
+                shutil.rmtree(os.path.join(fs_root, fake_database["user"][current_user_id]["username"]))
+            except OSError:
+                return flask.jsonify({
+                    "status": "error"
+                })
             return flask.jsonify({
                 "status": "ok"
             })
@@ -379,8 +391,9 @@ def _init_filesystem() -> None:
         os.makedirs(os.path.join(fs_root, user["username"]), exist_ok=True)
         for friend in user["friend_list"]:
             os.makedirs(os.path.join(fs_root, user["username"], friend), exist_ok=True)
+ 
 
-
+# Port of server-side
 def _main() -> None:
     _init_filesystem()
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { message } from "antd";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.min.css";
 
 import SignUp from "./containers/SignUp";
 import SignIn from "./containers/SignIn";
